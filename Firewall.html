@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firewall Configuration Report</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #0a192f; /* Dark navy blue */
+            color: #e6f1ff;
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(255, 126, 157, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(94, 184, 184, 0.08) 0%, transparent 50%);
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: #112240; /* Slightly lighter navy */
+            box-shadow: 0 0 30px rgba(0,0,0,0.3);
+            border-radius: 18px;
+            margin-top: 50px;
+            margin-bottom: 50px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #1e2a4a;
+        }
+        .ribbon-bow {
+            position: absolute;
+            top: -5px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background-color: #ff7e9d;
+            border-radius: 50% 50% 0 50%;
+            transform: rotate(45deg);
+            z-index: 1;
+            box-shadow: 0 3px 10px rgba(255, 126, 157, 0.3);
+        }
+        .ribbon-bow:before {
+            content: "";
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            width: 30px;
+            height: 30px;
+            background-color: #ffb3c6;
+            border-radius: 50%;
+        }
+        .ribbon-bow:after {
+            content: "";
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            width: 20px;
+            height: 20px;
+            background-color: #ffd6e7;
+            border-radius: 50%;
+        }
+        h1 {
+            color: #ff7e9d;
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: 600;
+            padding-bottom: 15px;
+            position: relative;
+            letter-spacing: 1px;
+        }
+        h1:after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 4px;
+            background: linear-gradient(90deg, #ff7e9d, #5eb8b8);
+            border-radius: 2px;
+        }
+        h2 {
+            color: #5eb8b8;
+            margin-top: 30px;
+            font-weight: 500;
+            position: relative;
+            display: inline-block;
+            letter-spacing: 0.5px;
+        }
+        h2:after {
+            content: "";
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background-color: #ff7e9d;
+            border-radius: 3px;
+        }
+        .header-info {
+            background: linear-gradient(135deg, rgba(255, 214, 231, 0.1) 0%, rgba(94, 184, 184, 0.1) 100%);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #233554;
+            backdrop-filter: blur(5px);
+        }
+        .header-info:before {
+            content: "";
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            width: 40px;
+            height: 40px;
+            background-color: #ff7e9d;
+            border-radius: 50%;
+            opacity: 0.2;
+        }
+        .header-info:after {
+            content: "";
+            position: absolute;
+            bottom: -15px;
+            left: -15px;
+            width: 60px;
+            height: 60px;
+            background-color: #5eb8b8;
+            border-radius: 50%;
+            opacity: 0.1;
+        }
+        .info-box {
+            background-color: rgba(17, 34, 64, 0.7);
+            padding: 12px 18px;
+            border-radius: 12px;
+            margin: 8px;
+            flex-grow: 1;
+            min-width: 200px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            position: relative;
+            border: 1px solid #233554;
+        }
+        .info-box:before {
+            content: "";
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #ff7e9d;
+            opacity: 0.5;
+        }
+        .step {
+            background-color: rgba(17, 34, 64, 0.7);
+            border-left: 5px solid #ff7e9d;
+            padding: 25px;
+            margin-bottom: 30px;
+            border-radius: 0 15px 15px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #233554;
+        }
+        .step:before {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 30px;
+            height: 30px;
+            background-color: rgba(255, 126, 157, 0.2);
+            border-radius: 50% 0 0 50%;
+        }
+        .step:hover {
+            border-left: 5px solid #5eb8b8;
+            transform: translateX(5px);
+            background-color: rgba(17, 34, 64, 0.9);
+        }
+        .command {
+            background-color: rgba(10, 25, 47, 0.7);
+            padding: 14px 18px;
+            border-radius: 12px;
+            font-family: 'Courier New', monospace;
+            margin: 18px 0;
+            overflow-x: auto;
+            border-left: 4px solid #5eb8b8;
+            color: #e6f1ff;
+            font-size: 0.95em;
+            box-shadow: inset 3px 0 5px rgba(0,0,0,0.1);
+            border: 1px solid #1e2a4a;
+        }
+        .result {
+            background-color: rgba(94, 184, 184, 0.1);
+            padding: 14px 18px;
+            border-radius: 12px;
+            margin: 15px 0;
+            border-left: 4px solid #ff7e9d;
+            box-shadow: inset 3px 0 5px rgba(0,0,0,0.1);
+            border: 1px solid rgba(94, 184, 184, 0.3);
+        }
+        table {
+            width: 100%;
+            border-collapse: separate;
+            margin: 25px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-radius: 15px;
+            overflow: hidden;
+            border: 1px solid #233554;
+        }
+        th {
+            background: linear-gradient(135deg, #ff7e9d, #5eb8b8);
+            color: #112240;
+            text-align: left;
+            padding: 15px;
+            position: relative;
+            font-weight: 600;
+        }
+        th:after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, #ff7e9d, #5eb8b8);
+        }
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #233554;
+            background-color: rgba(17, 34, 64, 0.7);
+        }
+        tr:nth-child(even) td {
+            background-color: rgba(10, 25, 47, 0.7);
+        }
+        tr:hover td {
+            background-color: rgba(94, 184, 184, 0.1);
+        }
+        .summary {
+            background: linear-gradient(135deg, rgba(255, 126, 157, 0.1) 0%, rgba(94, 184, 184, 0.1) 100%);
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 40px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #233554;
+            backdrop-filter: blur(5px);
+        }
+        .summary:before {
+            content: "";
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            width: 80px;
+            height: 80px;
+            background-color: rgba(255, 126, 157, 0.1);
+            border-radius: 50%;
+        }
+        .summary h2 {
+            margin-top: 0;
+            color: #ff7e9d;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            color: #5eb8b8;
+            font-size: 0.9em;
+            position: relative;
+            opacity: 0.8;
+        }
+        .footer:before {
+            content: "";
+            display: block;
+            width: 100px;
+            height: 2px;
+            background: linear-gradient(90deg, #ff7e9d, #5eb8b8);
+            margin: 0 auto 20px;
+            border-radius: 2px;
+            opacity: 0.5;
+        }
+        .os-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            overflow: hidden;
+            background-color: rgba(10, 25, 47, 0.7);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            border: 1px solid #233554;
+        }
+        .os-tab {
+            padding: 10px 20px;
+            background-color: rgba(255, 126, 157, 0.2);
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            flex-grow: 1;
+            text-align: center;
+            color: #e6f1ff;
+        }
+        .os-tab.active {
+            background: linear-gradient(135deg, #ff7e9d, #5eb8b8);
+            color: #112240;
+            font-weight: 600;
+        }
+        .os-content {
+            display: none;
+        }
+        .os-content.active {
+            display: block;
+        }
+        .decorative-circle {
+            position: fixed;
+            border-radius: 50%;
+            opacity: 0.05;
+            z-index: -1;
+        }
+        .circle-1 {
+            width: 300px;
+            height: 300px;
+            background-color: #ff7e9d;
+            top: -100px;
+            left: -100px;
+        }
+        .circle-2 {
+            width: 200px;
+            height: 200px;
+            background-color: #5eb8b8;
+            bottom: -50px;
+            right: -50px;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 8px;
+            position: relative;
+        }
+        li:before {
+            content: "•";
+            color: #ff7e9d;
+            font-weight: bold;
+            display: inline-block;
+            width: 1em;
+            margin-left: -1em;
+        }
+        pre {
+            margin: 0;
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+            color: #a8b2d1;
+        }
+    </style>
+</head>
+<body>
+    <div class="decorative-circle circle-1"></div>
+    <div class="decorative-circle circle-2"></div>
+    
+    <div class="container">
+        <div class="ribbon-bow"></div>
+        
+        <h1>Firewall Configuration Test Report</h1>
+        
+        <div class="header-info">
+            <div class="info-box">
+                <strong>Test Date:</strong> <span id="current-date"></span>
+            </div>
+            <div class="info-box">
+                <strong>Localhost IP:</strong> 192.168.29.140
+            </div>
+            <div class="info-box">
+                <strong>Tested Ports:</strong> 22 (SSH), 23 (Telnet)
+            </div>
+        </div>
+        
+        <div class="step">
+            <h2>1. Open Firewall Configuration Tool</h2>
+            <div class="os-tabs">
+                <div class="os-tab active" onclick="showOS('linux')">Linux (UFW)</div>
+                <div class="os-tab" onclick="showOS('windows')">Windows</div>
+            </div>
+            
+            <div id="linux" class="os-content active">
+                <div class="command">sudo ufw enable</div>
+                <div class="result">Enables the Uncomplicated Firewall (UFW) on Linux systems.</div>
+            </div>
+            
+            <div id="windows" class="os-content">
+                <p>Open Windows Defender Firewall with Advanced Security:</p>
+                <div class="command">Press Win+R, type "wf.msc", then press Enter</div>
+                <div class="result">Opens the advanced firewall configuration interface.</div>
+            </div>
+        </div>
+        
+        <div class="step">
+            <h2>2. List Current Firewall Rules</h2>
+            <div class="command">sudo ufw status numbered</div>
+            <div class="result">
+                <p>Example output:</p>
+                <pre>
+Status: active
+
+     To                         Action      From
+     --                         ------      ----
+[ 1] 22/tcp                     ALLOW IN    Anywhere
+[ 2] 22/tcp (v6)                ALLOW IN    Anywhere (v6)</pre>
+            </div>
+        </div>
+        
+        <div class="step">
+            <h2>3. Block Inbound Traffic on Port 23 (Telnet)</h2>
+            <div class="command">sudo ufw deny 23/tcp</div>
+            <div class="command">sudo ufw reload</div>
+            <div class="result">Successfully blocked incoming Telnet connections on port 23.</div>
+        </div>
+        
+        <div class="step">
+            <h2>4. Test the Firewall Rule</h2>
+            <p>From a remote machine or another terminal:</p>
+            <div class="command">telnet 192.168.29.140 23</div>
+            <div class="result">
+                Expected output: <span style="color: #ff7e9d;">Connection refused</span> or <span style="color: #ff7e9d;">Timeout</span>
+            </div>
+            
+            <p>Alternative test using nmap:</p>
+            <div class="command">nmap -p 23 192.168.29.140</div>
+            <div class="result">
+                Expected output: <span style="color: #5eb8b8;">23/tcp filtered telnet</span>
+            </div>
+        </div>
+        
+        <div class="step">
+            <h2>5. Allow SSH (Port 22)</h2>
+            <div class="command">sudo ufw allow 22/tcp</div>
+            <div class="command">sudo systemctl start ssh</div>
+            <div class="result">SSH service is now running and accessible on port 22.</div>
+            
+            <p>Verification:</p>
+            <div class="command">ssh user@192.168.29.140</div>
+            <div class="result">
+                Expected: Successful SSH connection prompt
+            </div>
+        </div>
+        
+        <div class="step">
+            <h2>6. Remove Test Block Rule</h2>
+            <div class="command">sudo ufw status numbered</div>
+            <div class="command">sudo ufw delete [rule-number]  # Replace with actual rule number</div>
+            <div class="result">Telnet block rule has been removed, restoring original state.</div>
+        </div>
+        
+        <div class="summary">
+            <h2>Firewall Traffic Filtering Summary</h2>
+            <p>Firewalls filter network traffic using predefined rules that examine:</p>
+            <ul>
+                <li><strong>Port numbers</strong> (e.g., 22 for SSH, 23 for Telnet)</li>
+                <li><strong>Protocol types</strong> (TCP/UDP/ICMP)</li>
+                <li><strong>Direction</strong> (inbound/outbound)</li>
+                <li><strong>Source/destination IP addresses</strong></li>
+            </ul>
+            
+            <p>In this test:</p>
+            <table>
+                <tr>
+                    <th>Port</th>
+                    <th>Action</th>
+                    <th>Result</th>
+                    <th>Status</th>
+                </tr>
+                <tr>
+                    <td>22 (SSH)</td>
+                    <td>ALLOW</td>
+                    <td>Connection successful</td>
+                    <td style="color: #5eb8b8;">Open</td>
+                </tr>
+                <tr>
+                    <td>23 (Telnet)</td>
+                    <td>DENY</td>
+                    <td>Connection refused</td>
+                    <td style="color: #ff7e9d;">Closed/Filtered</td>
+                </tr>
+            </table>
+        </div>
+        
+        <div class="footer">
+            Firewall Configuration Test Report | Generated on <span id="full-date"></span>
+        </div>
+    </div>
+
+    <script>
+        // Set current date
+        const now = new Date();
+        document.getElementById('current-date').textContent = now.toLocaleDateString();
+        document.getElementById('full-date').textContent = now.toLocaleString();
+        
+        // OS tab functionality
+        function showOS(os) {
+            document.querySelectorAll('.os-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.os-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            document.querySelector(`.os-tab[onclick="showOS('${os}')"]`).classList.add('active');
+            document.getElementById(os).classList.add('active');
+        }
+    </script>
+</body>
+</html>
